@@ -1,11 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"os"
-	"strings"
-)
-
 // Represents a CLI command
 type cliCommand struct {
 	name        string
@@ -47,80 +41,4 @@ func getCommandDirectory() map[string]cliCommand {
 			callback:    commandCatch,
 		},
 	}
-}
-
-// Exit the program
-func commandExit(cfg *config, args ...string) error {
-	fmt.Printf("Closing the Pokedex... Goodbye!\n")
-	os.Exit(0)
-	return nil
-}
-
-// Display usage information
-func commandHelp(cfg *config, args ...string) error {
-	fmt.Println()
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Usage:")
-	fmt.Println()
-	for _, cmd := range getCommandDirectory() {
-		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
-	}
-	fmt.Println()
-	return nil
-}
-
-// Maps command (move forward in the results)
-func commandMap(cfg *config, args ...string) error {
-	locationAreas, err := cfg.client.ListLocations(cfg.nextLocationsURL)
-	if err != nil {
-		fmt.Print("error running map command")
-		return err
-	}
-
-	cfg.nextLocationsURL = locationAreas.Next
-	if locationAreas.Previous != nil {
-		cfg.previousLocationsURL = locationAreas.Previous
-	}
-
-	for _, result := range locationAreas.Results {
-		fmt.Printf("%s\n", result.Name)
-	}
-	return nil
-}
-
-func commandMapb(cfg *config, args ...string) error {
-	locationAreas, err := cfg.client.ListLocations(cfg.previousLocationsURL)
-	if err != nil {
-		fmt.Print("error running map command")
-		return err
-	}
-
-	cfg.nextLocationsURL = locationAreas.Next
-	if locationAreas.Previous != nil {
-		cfg.previousLocationsURL = locationAreas.Previous
-	}
-
-	for _, result := range locationAreas.Results {
-		fmt.Printf("%s\n", result.Name)
-	}
-	return nil
-}
-
-func commandExplore(cfg *config, args ...string) error {
-	if len(args) == 0 {
-		return fmt.Errorf("command explore requires more one argument")
-	}
-
-	area := args[0]
-
-	pokemonFoundResp, err := cfg.client.ListPokemon(area)
-	if err != nil {
-		return fmt.Errorf("error listing pokemon: %w", err)
-	}
-
-	for _, encounter := range pokemonFoundResp.PokemonEncounters {
-		fmt.Printf("- %s\n", strings.ToLower(encounter.Pokemon.Name))
-	}
-
-	return nil
 }
