@@ -29,9 +29,7 @@ func (api *Client) ListPokemon(area string) (*PokemonsFoundResponse, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		if resp.StatusCode != http.StatusOK {
-			return nil, fmt.Errorf("API returned status: %d", resp.StatusCode)
-		}
+		return nil, fmt.Errorf("API returned status: %d", resp.StatusCode)
 	}
 
 	var pokemonFoundResp PokemonsFoundResponse

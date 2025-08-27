@@ -8,7 +8,8 @@ import (
 
 func main() {
 	config := &config{
-		client: pokeapi.NewClient(5*time.Second, 5*time.Second),
+		client:        pokeapi.NewClient(5*time.Second, 5*time.Second),
+		caughtPokemon: make(map[string]*pokeapi.PokemonInfoResponse),
 	}
 
 	repl := &repl{

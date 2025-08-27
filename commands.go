@@ -41,6 +41,11 @@ func getCommandDirectory() map[string]cliCommand {
 			description: "Explore a pokemon area by providing a location area as an argument",
 			callback:    commandExplore,
 		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a pokemon",
+			callback:    commandCatch,
+		},
 	}
 }
 
@@ -114,13 +119,8 @@ func commandExplore(cfg *config, args ...string) error {
 	}
 
 	for _, encounter := range pokemonFoundResp.PokemonEncounters {
-
 		fmt.Printf("- %s\n", strings.ToLower(encounter.Pokemon.Name))
 	}
 
 	return nil
 }
-
-// func prettyPrintFoundPokemon(pokemon []PokemonEncounters.Pokemon) {
-// for _, pokemon := range pokemon {}
-// }
