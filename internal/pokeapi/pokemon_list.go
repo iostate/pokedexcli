@@ -13,15 +13,12 @@ func (api *Client) ListPokemon(area string) (*PokemonsFoundResponse, error) {
 	if cacheData, ok := api.cache.Get(url); ok {
 		var pokemonFoundResp PokemonsFoundResponse
 		if err := json.Unmarshal(cacheData, &pokemonFoundResp); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal cache data: %w", err)
+			return nil, fmt.Errorf("%w: %v", ErrFailedUnmarshal, err)
 		}
 		return &pokemonFoundResp, nil
 	}
-	// === End Check Cache ===
 
-	// === Cache Miss Operation ===
-	//
-	// General operation: Grab data and store it in cache
+	// Cache miss
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -34,15 +31,15 @@ func (api *Client) ListPokemon(area string) (*PokemonsFoundResponse, error) {
 
 	var pokemonFoundResp PokemonsFoundResponse
 	if err := json.NewDecoder(resp.Body).Decode(&pokemonFoundResp); err != nil {
-		return nil, fmt.Errorf("failed to decode response: %w", err)
+		return nil, fmt.Errorf("%w: %v", ErrFailedDecode, err)
 	}
 
-	// Update cache
 	jsonData, err := json.Marshal(pokemonFoundResp)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal response for caching: %w", err)
+		return nil, fmt.Errorf("%w: %v", ErrFailedMarshal, err)
 	}
 
+	// Add to cache
 	api.cache.Add(url, jsonData)
 
 	return &pokemonFoundResp, nil

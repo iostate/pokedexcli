@@ -17,7 +17,13 @@ func (api *Client) ListLocations(pageURL *string) (*LocationAreasResponse, error
 	if ok {
 		var locationAreas LocationAreasResponse
 		if err := json.Unmarshal(cacheData, &locationAreas); err != nil {
-			return nil, fmt.Errorf("failed to unmarshal cache data: %w", err)
+			// very general error msg, does not specify
+			// that we failed to unmarshal cache data.
+			// consider changing this back
+			// failed to unmarshal cache []bytes from cache
+			// however, this error message is correct, in that we failed
+			// to unmarshal something
+			return nil, fmt.Errorf("%w: %v", ErrFailedUnmarshal, err)
 		}
 		return &locationAreas, nil
 	}
@@ -35,13 +41,13 @@ func (api *Client) ListLocations(pageURL *string) (*LocationAreasResponse, error
 
 	var locationAreas LocationAreasResponse
 	if err := json.NewDecoder(resp.Body).Decode(&locationAreas); err != nil {
-		return nil, fmt.Errorf("failed to decode response: %w", err)
+		return nil, fmt.Errorf("%w: %v", ErrFailedDecode, err)
 	}
 
 	// Update cache
 	jsonData, err := json.Marshal(locationAreas)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal response for caching: %w", err)
+		return nil, fmt.Errorf("%w: %v", ErrFailedMarshal, err)
 	}
 	api.cache.Add(url, jsonData)
 
