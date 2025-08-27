@@ -36,21 +36,21 @@ func (r *repl) Start() {
 			fmt.Println("\nGoodbye!")
 			break
 		}
-		userInput := scanner.Text()         // user's text
-		cleanInput := cleanInput(userInput) // clean the input
-		if len(cleanInput) == 0 {
+		userInput := lowercaseAndBreakUpWords(scanner.Text())
+
+		if len(userInput) == 0 {
+			fmt.Println()
 			continue
 		}
-		fmt.Println()
-		userCommand := cleanInput[0] // first word of clean input, aka command
-		// check command registry and call callback, print any errors
+
+		userCommand := userInput[0]
+		args := userInput[1:]
 		if command, exists := commandDirectory[userCommand]; exists {
-			err := command.callback(r.config)
-			if err != nil {
-				fmt.Printf("error found: %v", err)
+			if err := command.callback(r.config, args...); err != nil {
+				fmt.Printf("error running command %s: %v\n", command.name, err)
 			}
 		} else {
-			fmt.Printf("Unknown command: %s. Type 'help' for available commands.\n", userCommand)
+			fmt.Printf("Unknown command: %s. Type 'help' for available commands", command.name)
 		}
 	}
 }

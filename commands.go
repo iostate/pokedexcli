@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 // Represents a CLI command
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config) error
+	callback    func(cfg *config, args ...string) error
 }
 
 // Generate command directory
@@ -35,18 +36,23 @@ func getCommandDirectory() map[string]cliCommand {
 			description: "Display previous 20 location areas at a time",
 			callback:    commandMapb,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Explore a pokemon area by providing a location area as an argument",
+			callback:    commandExplore,
+		},
 	}
 }
 
 // Exit the program
-func commandExit(cfg *config) error {
+func commandExit(cfg *config, args ...string) error {
 	fmt.Printf("Closing the Pokedex... Goodbye!\n")
 	os.Exit(0)
 	return nil
 }
 
 // Display usage information
-func commandHelp(cfg *config) error {
+func commandHelp(cfg *config, args ...string) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -59,7 +65,7 @@ func commandHelp(cfg *config) error {
 }
 
 // Maps command (move forward in the results)
-func commandMap(cfg *config) error {
+func commandMap(cfg *config, args ...string) error {
 	locationAreas, err := cfg.client.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
 		fmt.Print("error running map command")
@@ -77,7 +83,7 @@ func commandMap(cfg *config) error {
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args ...string) error {
 	locationAreas, err := cfg.client.ListLocations(cfg.previousLocationsURL)
 	if err != nil {
 		fmt.Print("error running map command")
@@ -94,3 +100,27 @@ func commandMapb(cfg *config) error {
 	}
 	return nil
 }
+
+func commandExplore(cfg *config, args ...string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("command explore requires more one argument")
+	}
+
+	area := args[0]
+
+	pokemonFoundResp, err := cfg.client.ListPokemon(area)
+	if err != nil {
+		return fmt.Errorf("error listing pokemon: %w", err)
+	}
+
+	for _, encounter := range pokemonFoundResp.PokemonEncounters {
+
+		fmt.Printf("- %s\n", strings.ToLower(encounter.Pokemon.Name))
+	}
+
+	return nil
+}
+
+// func prettyPrintFoundPokemon(pokemon []PokemonEncounters.Pokemon) {
+// for _, pokemon := range pokemon {}
+// }

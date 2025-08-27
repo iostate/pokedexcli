@@ -23,7 +23,7 @@ func TestCleanInput(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		actual := cleanInput(c.input)
+		actual := lowercaseAndBreakUpWords(c.input)
 
 		// Check length of actual against length of expected
 		if len(actual) != len(c.expected) {

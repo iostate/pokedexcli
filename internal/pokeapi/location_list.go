@@ -23,18 +23,18 @@ func (api *Client) ListLocations(pageURL *string) (*LocationAreasResponse, error
 	}
 
 	// Cache miss
-	res, err := http.Get(url)
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("API returned status: %d", res.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API returned status: %d", resp.StatusCode)
 	}
 
 	var locationAreas LocationAreasResponse
-	if err := json.NewDecoder(res.Body).Decode(&locationAreas); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&locationAreas); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %w", err)
 	}
 
