@@ -6,11 +6,12 @@ import (
 	"os"
 
 	"github.com/iostate/pokedexcli/internal/pokeapi"
+	"github.com/iostate/pokedexcli/internal/pokedex"
 )
 
 type config struct {
 	client               *pokeapi.Client
-	caughtPokemon        map[string]*pokeapi.PokemonInfoResponse
+	pokedex              *pokedex.Pokedex
 	previousLocationsURL *string
 	nextLocationsURL     *string
 }
@@ -37,6 +38,7 @@ func (r *repl) Start() {
 			fmt.Println("\nGoodbye!")
 			break
 		}
+
 		userInput := lowercaseAndBreakUpWords(scanner.Text())
 
 		if len(userInput) == 0 {

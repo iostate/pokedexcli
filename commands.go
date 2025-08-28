@@ -4,7 +4,8 @@ package main
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config, args ...string) error
+	// args are already "cleaned" (lowercase)
+	callback func(cfg *config, args ...string) error
 }
 
 // Generate command directory
@@ -39,6 +40,11 @@ func getCommandDirectory() map[string]cliCommand {
 			name:        "catch",
 			description: "Catch a pokemon",
 			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect a pokemon from pokedex",
+			callback:    commandInspect,
 		},
 	}
 }

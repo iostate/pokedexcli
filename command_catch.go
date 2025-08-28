@@ -18,28 +18,28 @@ func commandCatch(cfg *config, args ...string) error {
 
 	fmt.Printf("Throwing a Pokeball at %s...", pokemonToCatch)
 
-	pokemonInfoResp, err := cfg.client.GetPokemonInfo(pokemonToCatch)
+	pokemon, err := cfg.client.GetPokemonInfo(pokemonToCatch)
 	if err != nil {
 		return fmt.Errorf("error getting pokemon info: %w", err)
 	}
 
-	caught, err := attemptCatchPokemon(pokemonInfoResp)
+	caught, err := attemptCatchPokemon(pokemon)
 	if err != nil {
 		return fmt.Errorf("erorr attempting to catch pokemon: %w", err)
 	}
 
 	if caught {
-		fmt.Printf("%s was caught and added to pokedex!\n", pokemonToCatch)
+		fmt.Printf("%s was caught and added to pokedex!\n", pokemon.Name)
 		// Add to map
-		cfg.caughtPokemon[pokemonToCatch] = pokemonInfoResp
+		cfg.pokedex.Add(pokemon)
 	} else {
-		fmt.Printf("%s was not caught!\n", pokemonToCatch)
+		fmt.Printf("%s was not caught!\n", pokemon.Name)
 	}
 
 	return nil
 }
 
-func attemptCatchPokemon(pokemon *pokeapi.PokemonInfoResponse) (bool, error) {
+func attemptCatchPokemon(pokemon *pokeapi.Pokemon) (bool, error) {
 
 	baseExperience := pokemon.BaseExperience
 
