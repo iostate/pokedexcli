@@ -3,7 +3,8 @@ package main
 import "fmt"
 
 // Inspect a pokemon
-
+//
+// Usage: inspect <pokemon>
 func commandInspect(cfg *config, args ...string) error {
 
 	if len(args) == 0 {
