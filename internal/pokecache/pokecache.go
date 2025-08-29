@@ -19,6 +19,7 @@ type cacheEntry struct {
 	val       []byte
 }
 
+// Creates a new Cache with an interval
 func NewCache(interval time.Duration) *Cache {
 	c := &Cache{
 		data:     make(map[string]cacheEntry),
@@ -31,6 +32,7 @@ func NewCache(interval time.Duration) *Cache {
 	return c
 }
 
+// Add something to the cache
 func (c *Cache) Add(key string, val []byte) {
 	c.Lock()
 	defer c.Unlock()
@@ -40,6 +42,7 @@ func (c *Cache) Add(key string, val []byte) {
 	}
 }
 
+// Get something from the cache
 func (c *Cache) Get(key string) ([]byte, bool) {
 	c.Lock()
 	defer c.Unlock()
@@ -52,17 +55,23 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	return cacheEntry.val, true
 }
 
-// Clean up old cache entries past the interval
-// specified in Cache
+// Clean up old cache entries past a specific interval
 func (c *Cache) reapLoop() {
 	defer c.ticker.Stop()
-	for range c.ticker.C {
-		c.Lock()
-		for key, entry := range c.data {
-			if time.Since(entry.createdAt) > c.interval {
-				delete(c.data, key)
+	for {
+		select {
+		case <-c.ticker.C:
+			c.Lock()
+			for key, entry := range c.data {
+				if time.Since(entry.createdAt) > c.interval {
+					delete(c.data, key)
+				}
+
 			}
+			c.Unlock()
+		case <-c.stopCh:
+			// Stop signal received
+			return
 		}
-		c.Unlock()
 	}
 }
