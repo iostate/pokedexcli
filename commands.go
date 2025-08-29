@@ -46,5 +46,10 @@ func getCommandDirectory() map[string]cliCommand {
 			description: "Inspect a pokemon from pokedex, inspect <pokemon>",
 			callback:    commandInspect,
 		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Display all Pokemon caught that are in Pokedex",
+			callback:    commandPokedex,
+		},
 	}
 }

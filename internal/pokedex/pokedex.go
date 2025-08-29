@@ -35,3 +35,17 @@ func (p *Pokedex) Get(name string) (*pokeapi.Pokemon, error) {
 	}
 	return p.caught[name], nil
 }
+
+// Get all Pokemon in Pokedex
+func (p *Pokedex) GetAllPokemon() []*pokeapi.Pokemon {
+	var result []*pokeapi.Pokemon
+
+	if len(p.caught) == 0 {
+		return []*pokeapi.Pokemon{}
+	}
+	for _, entry := range p.caught {
+		result = append(result, entry)
+	}
+
+	return result
+}
