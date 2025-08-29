@@ -16,6 +16,7 @@ type Pokemon struct {
 			URL  string
 		}
 	}
+	// An array holding the different Pokemon types
 	Types []struct {
 		Type struct {
 			Name string
@@ -24,11 +25,13 @@ type Pokemon struct {
 	}
 }
 
+// Holds information about the Pokemon type
 type PokemonType struct {
 	Name string
 	URL  string `json:"url"`
 }
 
+// Generate the stats for a Pokemon
 func (p *Pokemon) StatsMap() map[string]int64 {
 	stats := make(map[string]int64)
 	for _, s := range p.Stats {
@@ -37,6 +40,9 @@ func (p *Pokemon) StatsMap() map[string]int64 {
 	return stats
 }
 
+// Print the stats of a Pokemon
+//
+// HP, Attack, Defense, Special Attack, Special Defense, Speed
 func (p *Pokemon) PrintStats() {
 	stats := p.StatsMap()
 
@@ -45,6 +51,7 @@ func (p *Pokemon) PrintStats() {
 	fmt.Printf("Stats: \n-hp: %d\n-attack: %d\n-defense: %d\n-special-attach: %d\n-special-defense: %d\n-speed: %d\n", stats["hp"], stats["attack"], stats["defense"], stats["special-attack"], stats["special-defense"], stats["speed"])
 }
 
+// Print the Pokemon types
 func (p *Pokemon) PrintTypes() {
 	fmt.Printf("Types: \n")
 	for _, t := range p.Types {

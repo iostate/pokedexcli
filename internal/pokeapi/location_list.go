@@ -12,17 +12,12 @@ func (api *Client) ListLocations(pageURL *string) (*LocationAreasResponse, error
 		url = *pageURL
 	}
 
-	// Check cache
+	// Check cache first for location areas
 	cacheData, ok := api.cache.Get(url)
 	if ok {
 		var locationAreas LocationAreasResponse
+		// Unmarshal bytes to struct
 		if err := json.Unmarshal(cacheData, &locationAreas); err != nil {
-			// very general error msg, does not specify
-			// that we failed to unmarshal cache data.
-			// consider changing this back
-			// failed to unmarshal cache []bytes from cache
-			// however, this error message is correct, in that we failed
-			// to unmarshal something
 			return nil, fmt.Errorf("%w: %v", ErrFailedUnmarshal, err)
 		}
 		return &locationAreas, nil
@@ -40,6 +35,7 @@ func (api *Client) ListLocations(pageURL *string) (*LocationAreasResponse, error
 	}
 
 	var locationAreas LocationAreasResponse
+	// Decode http stream to struct
 	if err := json.NewDecoder(resp.Body).Decode(&locationAreas); err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrFailedDecode, err)
 	}

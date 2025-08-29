@@ -43,7 +43,7 @@ func getCommandDirectory() map[string]cliCommand {
 		},
 		"inspect": {
 			name:        "inspect",
-			description: "Inspect a pokemon from pokedex",
+			description: "Inspect a pokemon from pokedex, inspect <pokemon>",
 			callback:    commandInspect,
 		},
 	}

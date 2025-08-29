@@ -27,9 +27,9 @@ func (r *repl) Start() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	fmt.Printf("%s", cli_header)
+	// Run infinite loop as long as we don't exit
 	for {
 		fmt.Print("Pokedex > ")
-		// Run infinite loop as long as there's text to grab from os.Stdin
 
 		if !scanner.Scan() {
 			if err := scanner.Err(); err != nil {

@@ -10,15 +10,17 @@ func (api *Client) GetPokemonInfo(pokemonName string) (*Pokemon, error) {
 
 	url := baseURL + "/pokemon/" + pokemonName
 
+	// Check cache first for pokemon info
 	if cacheData, ok := api.cache.Get(url); ok {
 		var pokemon Pokemon
+		// Decode bytes to struct
 		if err := json.Unmarshal(cacheData, &pokemon); err != nil {
 			return nil, fmt.Errorf("%w: %v", ErrFailedUnmarshal, err)
 		}
 		return &pokemon, nil
 	}
 
-	// Cache miss operations start here
+	// Cache miss
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -30,6 +32,7 @@ func (api *Client) GetPokemonInfo(pokemonName string) (*Pokemon, error) {
 	}
 
 	var pokemon Pokemon
+	// Decode http stream to struct
 	if err := json.NewDecoder(resp.Body).Decode(&pokemon); err != nil {
 		return nil, fmt.Errorf("%w: %v", ErrFailedDecode, err)
 	}

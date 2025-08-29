@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 
+// Maps command (move backward in the results)
 func commandMapb(cfg *config, args ...string) error {
 	locationAreas, err := cfg.client.ListLocations(cfg.previousLocationsURL)
 	if err != nil {

@@ -39,6 +39,7 @@ func commandCatch(cfg *config, args ...string) error {
 	return nil
 }
 
+// Catches a Pokemon using chance
 func attemptCatchPokemon(pokemon *pokeapi.Pokemon) (bool, error) {
 
 	baseExperience := pokemon.BaseExperience

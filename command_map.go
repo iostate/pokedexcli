@@ -14,6 +14,7 @@ func commandMap(cfg *config, args ...string) error {
 		return err
 	}
 
+	// Provide the next & previous set of location areas to be fetched
 	cfg.nextLocationsURL = locationAreas.Next
 	if locationAreas.Previous != nil {
 		cfg.previousLocationsURL = locationAreas.Previous
